@@ -1,0 +1,39 @@
+import os
+import pandas as pd
+import pickle
+from sklearn.linear_model import LogisticRegression
+
+
+class Model():
+    def __init__(self) -> None:
+        df = pd.read_csv('data/Train_features_BBC.csv', index_col=0)
+        self.X_train = [df.iloc[i, :].array for i in range(len(df))]
+        self.y_train = pd.read_csv('data/Train_targets_BBC.csv', index_col=0).Category
+        df = pd.read_csv('data/Test_features_BBC.csv', index_col=0)
+        self.X_test = [df.iloc[i, :].array for i in range(len(df))]
+        self.project_path = os.path.join(os.getcwd(), "experiments")
+        self.log_reg_path = os.path.join(self.project_path, "logreg.sav")
+
+    def log_reg(self, predict=False) -> bool:
+        classifier = LogisticRegression(random_state=0)
+        try:
+            classifier.fit(self.X_train, self.y_train)
+        except Exception:
+            print("Something went wrong")
+        if predict:
+            if os.path.isfile(self.log_reg_path):
+                y_pred = classifier.predict(self.X_test)
+            else:
+                print("Model wasn't train")
+                return -1
+        return self.save_model(classifier, self.log_reg_path)
+
+    def save_model(self, classifier, path: str) -> bool:
+        with open(path, 'wb') as f:
+            pickle.dump(classifier, f)
+        return os.path.isfile(path)
+
+
+if __name__ == "__main__":
+    multi_model = Model()
+    multi_model.log_reg(predict=False)
