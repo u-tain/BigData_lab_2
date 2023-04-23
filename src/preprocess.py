@@ -2,8 +2,6 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-TEST_SIZE = 0.33
-
 
 class DataPreprocess():
     def __init__(self) -> None:
@@ -42,15 +40,15 @@ class DataPreprocess():
         return targets.Category
 
     def prepare_text(self, features, mode: str):
-        if mode=='train':
+        if mode == 'train':
             self.tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l2', encoding='latin-1', ngram_range=(1, 2),
-                                    stop_words='english')
+                                         stop_words='english')
             features = self.tfidf.fit_transform(features.Text).toarray()
         else:
             features = self.tfidf.transform(features.Text.tolist()).toarray()
         return features
 
-    def prepare_data(self, test_size=TEST_SIZE) -> bool:
+    def prepare_data(self) -> bool:
         self.get_data()
         try:
             X = pd.read_csv(self.X_path, index_col=0)
@@ -58,9 +56,9 @@ class DataPreprocess():
             X_test = pd.read_csv(self.X_test_path, index_col=0)
         except FileNotFoundError:
             print("data is not found")
-        X = self.prepare_text(X,mode='train')
+        X = self.prepare_text(X, mode='train')
         y = self.prepare_labels(y)
-        X_test = self.prepare_text(X_test,mode='test')
+        X_test = self.prepare_text(X_test, mode='test')
         self.save_ready_data(X, self.train_path[0], 'Text')
         self.save_ready_data(y, self.train_path[1], 'Category')
         self.save_ready_data(X_test, self.test_path[0], 'Text')
