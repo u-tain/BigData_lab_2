@@ -3,15 +3,19 @@ import pickle
 import os
 
 class Predictor():
-    def __init__(self) -> None:
-        df = pd.read_csv('data/Test_features_BBC.csv', index_col=0)
+    def __init__(self, project_path: str = None) -> None:
+        if project_path:
+            self.project_path = os.path.join(project_path, "data")
+        else:
+            self.project_path = os.path.join(os.getcwd()[:-4], "data")
+        df = pd.read_csv(os.path.join(self.project_path, 'Test_features_BBC.csv'), index_col=0)
         self.X_test = [df.iloc[i, :].array for i in range(len(df))]
-        self.model_path = 'experiments/logreg.sav'
-        self.test_df_before_prepoc = pd.read_csv('data/BBC News Test.csv')
-        self.Train = pd.read_csv(os.path.join('data', "BBC News Train.csv"), index_col=0)
+        self.model_path = os.path.join(self.project_path[:-5], 'experiments/logreg.sav')
+        self.test_df_before_prepoc = pd.read_csv(os.path.join(self.project_path, 'BBC News Test.csv'))
+        self.Train = pd.read_csv(os.path.join(self.project_path, "BBC News Train.csv"), index_col=0)
         self.labels_to_id = {key: i for i, key in enumerate(self.Train.Category.unique())}
         self.id_to_labels = dict(zip(self.labels_to_id.values(), self.labels_to_id.keys()))
-        self.result_path = os.path.join('experiments', 'result.csv')
+        self.result_path = os.path.join(self.project_path[:-5], 'experiments/result.csv')
 
     def predict(self) -> bool:
         try:

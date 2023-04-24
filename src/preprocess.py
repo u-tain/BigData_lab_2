@@ -4,8 +4,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 class DataPreprocess():
-    def __init__(self) -> None:
-        self.project_path = os.path.join(os.getcwd(), "data")
+    def __init__(self, project_path: str = None) -> None:
+        if project_path:
+            self.project_path = os.path.join(project_path, "data")
+        else:
+            self.project_path = os.path.join(os.getcwd()[:-4], "data")
         self.data_path = os.path.join(self.project_path, "BBC News Train.csv")
         self.labels_to_id = {}
         self.id_to_labels = {}
@@ -56,6 +59,7 @@ class DataPreprocess():
             X_test = pd.read_csv(self.X_test_path, index_col=0)
         except FileNotFoundError:
             print("data is not found")
+            return False
         X = self.prepare_text(X, mode='train')
         y = self.prepare_labels(y)
         X_test = self.prepare_text(X_test, mode='test')
