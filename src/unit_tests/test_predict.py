@@ -1,11 +1,10 @@
-import os
 import unittest
 from src.predict import Predictor
 
 
 class TestPredictor(unittest.TestCase):
     def setUp(self) -> None:
-        self.predictor = Predictor(os.getcwd()[:-14])
+        self.predictor = Predictor()
 
     def test_predict(self):
         self.assertEqual(self.predictor.predict(), True)

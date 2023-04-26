@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
+import configparser
 
 
 class DataPreprocess():
@@ -9,7 +10,12 @@ class DataPreprocess():
             self.project_path = os.path.join(project_path, "data")
         else:
             self.project_path = os.path.join(os.getcwd()[:-4], "data")
+        self.config = configparser.ConfigParser()
         self.data_path = os.path.join(self.project_path, "BBC News Train.csv")
+        self.test_data_path = os.path.join(self.project_path, "BBC News Test.csv")
+        self.config['PROJECT'] = {'path': self.project_path}
+        self.config['DATA'] = {'train': self.data_path,
+                               'test': self.test_data_path}
         self.labels_to_id = {}
         self.id_to_labels = {}
         self.tfidf = 0
@@ -18,7 +24,6 @@ class DataPreprocess():
         self.X_test_path = os.path.join(self.project_path, "features_test_BBC.csv")
         self.train_path = [os.path.join(self.project_path, "Train_features_BBC.csv"), os.path.join(
             self.project_path, "Train_targets_BBC.csv")]
-        self.test_data_path = os.path.join(self.project_path, "BBC News Test.csv")
         self.test_path = [os.path.join(self.project_path, "Test_features_BBC.csv")]
 
     def get_data(self) -> bool:
@@ -60,13 +65,22 @@ class DataPreprocess():
         except FileNotFoundError:
             print("data is not found")
             return False
+        else:
+            print("Данные получены")
         X = self.prepare_text(X, mode='train')
         y = self.prepare_labels(y)
         X_test = self.prepare_text(X_test, mode='test')
+        print("Данные готовы")
+        self.config['READY_DATA_TRAIN'] = {'X_train': self.train_path[0],
+                                           'y_train': self.train_path[1]}
+        self.config['READY_DATA_TEST'] = {'X_test': self.test_path[0]}
+
         self.save_ready_data(X, self.train_path[0], 'Text')
         self.save_ready_data(y, self.train_path[1], 'Category')
         self.save_ready_data(X_test, self.test_path[0], 'Text')
 
+        with open('config.ini', 'w') as configfile:
+            self.config.write(configfile)
         return os.path.isfile(self.train_path[0]) and \
                os.path.isfile(self.train_path[1]) and \
                os.path.isfile(self.test_path[0])

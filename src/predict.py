@@ -1,18 +1,20 @@
 import pandas as pd
 import pickle
 import os
+import configparser
+
 
 class Predictor():
-    def __init__(self, project_path: str = None) -> None:
-        if project_path:
-            self.project_path = os.path.join(project_path, "data")
-        else:
-            self.project_path = os.path.join(os.getcwd()[:-4], "data")
-        df = pd.read_csv(os.path.join(self.project_path, 'Test_features_BBC.csv'), index_col=0)
+    def __init__(self) -> None:
+        self.config = configparser.ConfigParser()
+        self.config.read("config.ini")
+        self.project_path = self.config['PROJECT']['path']
+
+        df = pd.read_csv(self.config['READY_DATA_TEST']['x_test'], index_col=0)
         self.X_test = [df.iloc[i, :].array for i in range(len(df))]
-        self.model_path = os.path.join(self.project_path[:-5], 'experiments/logreg.sav')
-        self.test_df_before_prepoc = pd.read_csv(os.path.join(self.project_path, 'BBC News Test.csv'))
-        self.Train = pd.read_csv(os.path.join(self.project_path, "BBC News Train.csv"), index_col=0)
+        self.model_path = self.config['LOGREG']['model_path']
+        self.test_df_before_prepoc = pd.read_csv(self.config['DATA']['test'])
+        self.Train = pd.read_csv(self.config['DATA']['train'], index_col=0)
         self.labels_to_id = {key: i for i, key in enumerate(self.Train.Category.unique())}
         self.id_to_labels = dict(zip(self.labels_to_id.values(), self.labels_to_id.keys()))
         self.result_path = os.path.join(self.project_path[:-5], 'experiments/result.csv')
@@ -29,6 +31,10 @@ class Predictor():
             "ArticleId": self.test_df_before_prepoc["ArticleId"],
             "Category": Y_pred
         })
+        print('Предсказания выполнены')
+        self.config['RESULT'] = {'path': self.result_path}
+        with open('config.ini', 'w') as configfile:
+            self.config.write(configfile)
         results.to_csv(self.result_path, index=False)
         return True
 
