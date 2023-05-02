@@ -1,8 +1,13 @@
 FROM python:3.10
 
-WORKDIR /App
+WORKDIR /app
 
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 COPY . .
-CMD ["python3","run", "--host=0.0.0.0"]
+RUN ["python", "src/preprocess.py"]
+RUN ["python", "src/train.py"]
+RUN ["python", "src/predict.py"]
+RUN ["python", "src/test/test_preprocess.py"]
+RUN ["python", "src/test/test_train.py"]
+RUN ["python", "src/test/test_predict.py"]
