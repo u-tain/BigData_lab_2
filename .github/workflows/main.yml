@@ -29,6 +29,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
-          
-      
-       
+      - 
+        name: cd step
+        uses: ./.github/workflows/cd  
