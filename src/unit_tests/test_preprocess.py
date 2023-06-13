@@ -1,7 +1,10 @@
 import os
 import unittest
 import pandas as pd
-from src.preprocess import DataPreprocess
+import sys 
+
+sys.path.insert(1, os.path.join(os.getcwd(), "src"))
+from preprocess import DataPreprocess
 
 
 class TestDataPreprocess(unittest.TestCase):

@@ -1,5 +1,8 @@
 import unittest
-from src.predict import Predictor
+import os
+import sys 
+sys.path.insert(1, os.path.join(os.getcwd(), "src"))
+from predict import Predictor
 
 
 class TestPredictor(unittest.TestCase):

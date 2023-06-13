@@ -1,5 +1,8 @@
 import unittest
-from src.train import Model
+import sys
+import os
+sys.path.insert(1, os.path.join(os.getcwd(), "src"))
+from train import Model
 
 
 class TestTrain(unittest.TestCase):
