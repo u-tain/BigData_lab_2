@@ -34,7 +34,7 @@ class Model():
                                  'random_state': params['random_state'],
                                  'model_path': self.log_reg_path
                                  }
-        with open('config.ini', 'w') as configfile:
+        with open('src/config.ini', 'w') as configfile:
             self.config.write(configfile)
         return self.save_model(classifier, self.log_reg_path)
 
