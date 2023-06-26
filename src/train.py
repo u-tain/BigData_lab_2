@@ -3,12 +3,13 @@ import pandas as pd
 import pickle
 from sklearn.linear_model import LogisticRegression
 import configparser
+import logging
 
 
 class Model():
     def __init__(self) -> None:
         self.config = configparser.ConfigParser()
-        self.config.read("config.ini")
+        self.config.read("src/config.ini")
         self.project_path = self.config['PROJECT']['path']
 
         df = pd.read_csv(self.config['READY_DATA_TRAIN']['X_train'], index_col=0)
@@ -19,12 +20,13 @@ class Model():
 
     def log_reg(self) -> bool:
         classifier = LogisticRegression(penalty='l2', C=1.0, max_iter=100, random_state=0)
+        logging.info('the model has been initialized')
         try:
             classifier.fit(self.X_train, self.y_train)
         except Exception:
-            print("Something went wrong")
+            logging.error("Something went wrong in fit model")
         else:
-            print('Модель успешно обучена')
+            logging.info('Model successfully trained')
         params = classifier.get_params()
         self.config['LOGREG'] = {'penalty': params['penalty'],
                                  'C': params['C'],
@@ -39,9 +41,12 @@ class Model():
     def save_model(self, classifier, path: str) -> bool:
         with open(path, 'wb') as f:
             pickle.dump(classifier, f)
+        logging.info('model saved')
         return os.path.isfile(path)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, filename="train.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
     multi_model = Model()
     multi_model.log_reg()

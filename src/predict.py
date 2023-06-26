@@ -2,12 +2,12 @@ import pandas as pd
 import pickle
 import os
 import configparser
-
+import logging
 
 class Predictor():
     def __init__(self) -> None:
         self.config = configparser.ConfigParser()
-        self.config.read("config.ini")
+        self.config.read("src/config.ini")
         self.project_path = self.config['PROJECT']['path']
 
         df = pd.read_csv(self.config['READY_DATA_TEST']['x_test'], index_col=0)
@@ -23,19 +23,22 @@ class Predictor():
         try:
             classifier = pickle.load(open(self.model_path, "rb"))
         except FileNotFoundError:
-            print("Model wasn't trained")
+            logging.error("Model wasn't trained")
             return False
+        logging.info('Start predictions')
         Y_pred = classifier.predict(self.X_test)
+        logging.info('Predictions fulfilled')
         Y_pred = self.post_process(Y_pred)
+        logging.info('Predictions post-processed')
         results = pd.DataFrame({
             "ArticleId": self.test_df_before_prepoc["ArticleId"],
             "Category": Y_pred
         })
-        print('Предсказания выполнены')
         self.config['RESULT'] = {'path': self.result_path}
-        with open('config.ini', 'w') as configfile:
+        with open('src/config.ini', 'w') as configfile:
             self.config.write(configfile)
         results.to_csv(self.result_path, index=False)
+        logging.info('results written to file ' + self.result_path)
         return True
 
     def post_process(self, predictions):
@@ -46,5 +49,7 @@ class Predictor():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, filename="predict.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
     predictor = Predictor()
     predictor.predict()

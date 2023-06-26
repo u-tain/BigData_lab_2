@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import configparser
+import logging
 
 
 class DataPreprocess():
@@ -9,22 +10,22 @@ class DataPreprocess():
         if project_path:
             self.project_path = os.path.join(project_path, "data")
         else:
-            self.project_path = os.path.join(os.getcwd()[:-4], "data")
+            self.project_path = os.path.join(os.getcwd(), "data").replace('\\','/')
         self.config = configparser.ConfigParser()
-        self.data_path = os.path.join(self.project_path, "BBC News Train.csv")
-        self.test_data_path = os.path.join(self.project_path, "BBC News Test.csv")
+        self.data_path = os.path.join(self.project_path, "BBC News Train.csv").replace('\\','/')
+        self.test_data_path = os.path.join(self.project_path, "BBC News Test.csv").replace('\\','/')
         self.config['PROJECT'] = {'path': self.project_path}
         self.config['DATA'] = {'train': self.data_path,
                                'test': self.test_data_path}
         self.labels_to_id = {}
         self.id_to_labels = {}
         self.tfidf = 0
-        self.X_path = os.path.join(self.project_path, "features_BBC.csv")
-        self.y_path = os.path.join(self.project_path, "targets_BBC.csv")
-        self.X_test_path = os.path.join(self.project_path, "features_test_BBC.csv")
-        self.train_path = [os.path.join(self.project_path, "Train_features_BBC.csv"), os.path.join(
-            self.project_path, "Train_targets_BBC.csv")]
-        self.test_path = [os.path.join(self.project_path, "Test_features_BBC.csv")]
+        self.X_path = os.path.join(self.project_path, "features_BBC.csv").replace('\\','/')
+        self.y_path = os.path.join(self.project_path, "targets_BBC.csv").replace('\\','/')
+        self.X_test_path = os.path.join(self.project_path, "features_test_BBC.csv").replace('\\','/')
+        self.train_path = [os.path.join(self.project_path, "Train_features_BBC.csv").replace('\\','/'), os.path.join(
+            self.project_path, "Train_targets_BBC.csv").replace('\\','/')]
+        self.test_path = [os.path.join(self.project_path, "Test_features_BBC.csv").replace('\\','/')]
 
     def get_data(self) -> bool:
         dataset = pd.read_csv(self.data_path)
@@ -38,7 +39,7 @@ class DataPreprocess():
         if os.path.isfile(self.X_path) and os.path.isfile(self.y_path) and os.path.isfile(self.X_test_path):
             return os.path.isfile(self.X_path) and os.path.isfile(self.y_path) and os.path.isfile(self.X_test_path)
         else:
-            print("X and y data is not ready")
+            logging.error("X and y data is not ready")
             return False
 
     def prepare_labels(self, targets):
@@ -63,14 +64,14 @@ class DataPreprocess():
             y = pd.read_csv(self.y_path, index_col=0)
             X_test = pd.read_csv(self.X_test_path, index_col=0)
         except FileNotFoundError:
-            print("data is not found")
+            logging.error("data is not found")
             return False
         else:
-            print("Данные получены")
+            logging.info("Data received")
         X = self.prepare_text(X, mode='train')
         y = self.prepare_labels(y)
         X_test = self.prepare_text(X_test, mode='test')
-        print("Данные готовы")
+        logging.info("Data ready")
         self.config['READY_DATA_TRAIN'] = {'X_train': self.train_path[0],
                                            'y_train': self.train_path[1]}
         self.config['READY_DATA_TEST'] = {'X_test': self.test_path[0]}
@@ -78,8 +79,8 @@ class DataPreprocess():
         self.save_ready_data(X, self.train_path[0], 'Text')
         self.save_ready_data(y, self.train_path[1], 'Category')
         self.save_ready_data(X_test, self.test_path[0], 'Text')
-
-        with open('config.ini', 'w') as configfile:
+        logging.info('Data saved')
+        with open('src/config.ini', 'w') as configfile:
             self.config.write(configfile)
         return os.path.isfile(self.train_path[0]) and \
                os.path.isfile(self.train_path[1]) and \
@@ -98,5 +99,7 @@ class DataPreprocess():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, filename="preprocess.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
     data_preprocess = DataPreprocess()
     data_preprocess.prepare_data()
