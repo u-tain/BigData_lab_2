@@ -3,44 +3,35 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import configparser
 import logging
+import clickhouse_connect
+import numpy as np
 
 
 class DataPreprocess():
     def __init__(self, project_path: str = None) -> None:
-        if project_path:
-            self.project_path = os.path.join(project_path, "data")
-        else:
-            self.project_path = os.path.join(os.getcwd(), "data").replace('\\','/')
+        # подключаемся к базе данных
+        self.client = clickhouse_connect.get_client(host='localhost', username='default', password='')
+        self.x_table_name = 'Train_features_BBC'
+        self.y_table_name = 'targets_BBC'
+        self.x_test_table_name = 'Test_features_BBC'
+
         self.config = configparser.ConfigParser()
-        self.data_path = os.path.join(self.project_path, "BBC News Train.csv").replace('\\','/')
-        self.test_data_path = os.path.join(self.project_path, "BBC News Test.csv").replace('\\','/')
-        self.config['PROJECT'] = {'path': self.project_path}
-        self.config['DATA'] = {'train': self.data_path,
-                               'test': self.test_data_path}
-        self.labels_to_id = {}
-        self.id_to_labels = {}
-        self.tfidf = 0
-        self.X_path = os.path.join(self.project_path, "features_BBC.csv").replace('\\','/')
-        self.y_path = os.path.join(self.project_path, "targets_BBC.csv").replace('\\','/')
-        self.X_test_path = os.path.join(self.project_path, "features_test_BBC.csv").replace('\\','/')
-        self.train_path = [os.path.join(self.project_path, "Train_features_BBC.csv").replace('\\','/'), os.path.join(
-            self.project_path, "Train_targets_BBC.csv").replace('\\','/')]
-        self.test_path = [os.path.join(self.project_path, "Test_features_BBC.csv").replace('\\','/')]
+        self.config['DATA'] = {'train': 'BBC_News_Train',
+                               'test': 'BBC_News_Test'}
 
     def get_data(self) -> bool:
-        dataset = pd.read_csv(self.data_path)
-        X = pd.DataFrame(dataset.Text)
-        y = pd.DataFrame(dataset.Category)
-        X.to_csv(self.X_path, index=True)
-        y.to_csv(self.y_path, index=True)
-        dataset_test = pd.read_csv(self.test_data_path)
-        X_test = pd.DataFrame(dataset_test.Text)
-        X_test.to_csv(self.X_test_path, index=True)
-        if os.path.isfile(self.X_path) and os.path.isfile(self.y_path) and os.path.isfile(self.X_test_path):
-            return os.path.isfile(self.X_path) and os.path.isfile(self.y_path) and os.path.isfile(self.X_test_path)
-        else:
-            logging.error("X and y data is not ready")
-            return False
+        # записываем запрос обучающих данных в датафрейм
+        query = self.client.query("SELECT Text, Category FROM BBC_News_Train")
+        dataset = pd.DataFrame(query.result_rows,columns=['Text','Category'])
+
+        self.X = pd.DataFrame(dataset.Text)
+        self.y = pd.DataFrame(dataset.Category)
+
+        # записываем запрос тестовых данных в датафрейм
+        query = self.client.query("SELECT * FROM BBC_News_Test")
+        dataset = pd.DataFrame(query.result_rows,columns=['idx','Text'])
+        self.X_test = pd.DataFrame(dataset.Text)
+        
 
     def prepare_labels(self, targets):
         self.labels_to_id = {key: i for i, key in enumerate(targets.Category.unique())}
@@ -58,35 +49,33 @@ class DataPreprocess():
         return features
 
     def prepare_data(self) -> bool:
-        self.get_data()
         try:
-            X = pd.read_csv(self.X_path, index_col=0)
-            y = pd.read_csv(self.y_path, index_col=0)
-            X_test = pd.read_csv(self.X_test_path, index_col=0)
-        except FileNotFoundError:
-            logging.error("data is not found")
+            self.get_data()
+        except:
+            logging.error("Error in get data")
             return False
         else:
             logging.info("Data received")
-        X = self.prepare_text(X, mode='train')
-        y = self.prepare_labels(y)
-        X_test = self.prepare_text(X_test, mode='test')
-        logging.info("Data ready")
-        self.config['READY_DATA_TRAIN'] = {'X_train': self.train_path[0],
-                                           'y_train': self.train_path[1]}
-        self.config['READY_DATA_TEST'] = {'X_test': self.test_path[0]}
 
-        self.save_ready_data(X, self.train_path[0], 'Text')
-        self.save_ready_data(y, self.train_path[1], 'Category')
-        self.save_ready_data(X_test, self.test_path[0], 'Text')
+        X = self.prepare_text(self.X, mode='train')
+        y = self.prepare_labels(self.y)
+        X_test = self.prepare_text(self.X_test, mode='test')
+        logging.info("Data ready")
+
+        self.config['READY_DATA_TRAIN'] = {'X_train': self.x_table_name,
+                                           'y_train': self.y_table_name}
+        self.config['READY_DATA_TEST'] = {'X_test': self.x_test_table_name}
+
+        # self.save_ready_data(X, self.x_table_name, 'Text')
+        # self.save_ready_data(y, self.y_table_name, 'Category')
+        self.save_ready_data(X_test, self.x_test_table_name, 'Text')
         logging.info('Data saved')
+        
         with open('src/config.ini', 'w') as configfile:
             self.config.write(configfile)
-        return os.path.isfile(self.train_path[0]) and \
-               os.path.isfile(self.train_path[1]) and \
-               os.path.isfile(self.test_path[0])
+        
 
-    def save_ready_data(self, arr, path: str, mode: str) -> bool:
+    def save_ready_data(self, arr, name: str, mode: str) -> bool:
         items = arr.tolist()
         df = pd.DataFrame()
         if mode == 'Text':
@@ -94,8 +83,27 @@ class DataPreprocess():
         else:
             df[mode] = items
         df = df.reset_index(drop=True)
-        df.to_csv(path, index=True)
-        return os.path.isfile(path)
+        # создаем таблицу для результат обработки данных
+        print(df.columns)
+        if 'Range' in str(df.columns):
+            columns = np.arange(df.columns.start,df.columns.stop)
+        else: 
+            columns = df.columns
+        num_columns = len(columns)
+        columns = [f'"{item}" FLOAT' for item in columns]
+        columns = str(columns).replace('[','').replace(']','').replace("'","")
+        text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = Log'
+        delete_query = f'DROP TABLE {name};'
+        self.client.query(text_query)
+        rows = df.values.tolist() 
+        # print(rows[0])
+        rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
+        # print(name)
+        self.client.query(f'SET memory_overcommit_ratio_denominator=4000, memory_usage_overcommit_max_wait_microseconds=500')
+        insert_query = f'INSERT INTO {name}  VALUES {rows} '
+        print(self.client.query(insert_query))
+        print(self.client.query(f'SELECT * FROM {name}').result_rows)
+        # self.client.query(insert_query)
 
 
 if __name__ == "__main__":
