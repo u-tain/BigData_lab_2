@@ -66,8 +66,8 @@ class DataPreprocess():
                                            'y_train': self.y_table_name}
         self.config['READY_DATA_TEST'] = {'X_test': self.x_test_table_name}
 
-        # self.save_ready_data(X, self.x_table_name, 'Text')
-        # self.save_ready_data(y, self.y_table_name, 'Category')
+        self.save_ready_data(X, self.x_table_name, 'Text')
+        self.save_ready_data(y, self.y_table_name, 'Category')
         self.save_ready_data(X_test, self.x_test_table_name, 'Text')
         logging.info('Data saved')
         
@@ -76,6 +76,7 @@ class DataPreprocess():
         
 
     def save_ready_data(self, arr, name: str, mode: str) -> bool:
+        #TODO: проверить если таблица существует, то удалить и создать заново
         items = arr.tolist()
         df = pd.DataFrame()
         if mode == 'Text':
@@ -90,20 +91,17 @@ class DataPreprocess():
         else: 
             columns = df.columns
         num_columns = len(columns)
+        # print(self.client.query(f'SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = {name};').result_rows)
         columns = [f'"{item}" FLOAT' for item in columns]
         columns = str(columns).replace('[','').replace(']','').replace("'","")
         text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = Log'
         delete_query = f'DROP TABLE {name};'
+        if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
+            self.client.query(delete_query)
         self.client.query(text_query)
         rows = df.values.tolist() 
-        # print(rows[0])
         rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
-        # print(name)
-        self.client.query(f'SET memory_overcommit_ratio_denominator=4000, memory_usage_overcommit_max_wait_microseconds=500')
         insert_query = f'INSERT INTO {name}  VALUES {rows} '
-        print(self.client.query(insert_query))
-        print(self.client.query(f'SELECT * FROM {name}').result_rows)
-        # self.client.query(insert_query)
 
 
 if __name__ == "__main__":
