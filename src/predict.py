@@ -1,23 +1,34 @@
 import pandas as pd
+import numpy as np
 import pickle
 import os
 import configparser
 import logging
+import clickhouse_connect
 
 class Predictor():
     def __init__(self) -> None:
         self.config = configparser.ConfigParser()
         self.config.read("src/config.ini")
-        self.project_path = self.config['PROJECT']['path']
+        self.prodject_path = self.project_path = os.getcwd().replace('\\','/')
+        self.client = clickhouse_connect.get_client(host='localhost', username='default', password='',)
 
-        df = pd.read_csv(self.config['READY_DATA_TEST']['x_test'], index_col=0)
+        query= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TEST']['X_test']}")
+        df  = pd.DataFrame(columns= np.arange(int(self.config['READY_DATA_TEST']['x_test_columns'])),)
+        for item in query.result_rows:
+            df.loc[len(df)] = item
+
         self.X_test = [df.iloc[i, :].array for i in range(len(df))]
         self.model_path = self.config['LOGREG']['model_path']
-        self.test_df_before_prepoc = pd.read_csv(self.config['DATA']['test'])
-        self.Train = pd.read_csv(self.config['DATA']['train'], index_col=0)
+        query = self.client.query(f"SELECT * FROM {self.config['DATA']['test']}")
+        self.test_df_before_prepoc  = pd.DataFrame(query.result_rows,columns=['ArticleId','Text'])
+        query = self.client.query(f"SELECT * FROM {self.config['DATA']['train']}")
+        self.Train = pd.DataFrame(query.result_rows,columns=['idx','Text','Category'])
+        del self.Train['idx']
+
         self.labels_to_id = {key: i for i, key in enumerate(self.Train.Category.unique())}
         self.id_to_labels = dict(zip(self.labels_to_id.values(), self.labels_to_id.keys()))
-        self.result_path = os.path.join(self.project_path[:-5], 'experiments/result.csv')
+        self.result_path = os.path.join(self.project_path, 'experiments','result.csv')
 
     def predict(self) -> bool:
         try:
