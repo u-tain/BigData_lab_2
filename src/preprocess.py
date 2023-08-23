@@ -66,13 +66,14 @@ class DataPreprocess():
                                            'y_train': self.y_table_name}
         self.config['READY_DATA_TEST'] = {'X_test': self.x_test_table_name}
 
-        self.save_ready_data(X, self.x_table_name, 'Text')
-        self.save_ready_data(y, self.y_table_name, 'Category')
-        self.save_ready_data(X_test, self.x_test_table_name, 'Text')
+        self.config['READY_DATA_TRAIN']['x_train_columns'] = str(self.save_ready_data(X, self.x_table_name, 'Text'))
+        self.config['READY_DATA_TRAIN']['y_train_columns'] = str(self.save_ready_data(y, self.y_table_name, 'Category'))
+        self.config['READY_DATA_TEST']['x_test_columns'] = str(self.save_ready_data(X_test, self.x_test_table_name, 'Text'))
         logging.info('Data saved')
         
         with open('src/config.ini', 'w') as configfile:
             self.config.write(configfile)
+        self.client.close()
         
 
     def save_ready_data(self, arr, name: str, mode: str) -> bool:
@@ -84,8 +85,9 @@ class DataPreprocess():
         else:
             df[mode] = items
         df = df.reset_index(drop=True)
+        print(len(df))
         # создаем таблицу для результат обработки данных
-        print(df.columns)
+
         if 'Range' in str(df.columns):
             columns = np.arange(df.columns.start,df.columns.stop)
         else: 
@@ -102,6 +104,8 @@ class DataPreprocess():
         rows = df.values.tolist() 
         rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
         insert_query = f'INSERT INTO {name}  VALUES {rows} '
+        print(self.client.query(insert_query))
+        return num_columns
 
 
 if __name__ == "__main__":
