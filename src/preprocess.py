@@ -8,7 +8,7 @@ import numpy as np
 
 
 class DataPreprocess():
-    def __init__(self, project_path: str = None) -> None:
+    def __init__(self) -> None:
         # подключаемся к базе данных
         self.client = clickhouse_connect.get_client(host='localhost', username='default', password='')
         self.x_table_name = 'Train_features_BBC'
