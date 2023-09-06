@@ -5,7 +5,7 @@ import pickle
 from sklearn.linear_model import LogisticRegression
 import configparser
 import logging
-import clickhouse_connect
+from bd_utils import connect2bd
 
 
 
@@ -16,7 +16,7 @@ class Model():
         self.prodject_path = self.project_path = os.getcwd().replace('\\','/')
 
         # подключаемся к базе данных
-        self.client = clickhouse_connect.get_client(host='localhost', username='default', password='',)
+        self.client = connect2bd()
 
         query1= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['x_train']}")
         query2= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['y_train']}")

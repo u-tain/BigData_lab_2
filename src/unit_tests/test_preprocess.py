@@ -3,6 +3,7 @@ import unittest
 import pandas as pd
 import sys 
 import clickhouse_connect
+from bd_utils import connect2bd
 
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
 from preprocess import DataPreprocess
@@ -19,7 +20,7 @@ class TestDataPreprocess(unittest.TestCase):
         self.assertEqual(self.data_maker.prepare_data(), True)
 
     def test_prepare_target(self):
-        client = clickhouse_connect.get_client(host='localhost', username='default', password='')
+        client = connect2bd()
         query = client.query("SELECT Text, Category FROM BBC_News_Train")
         dataset = pd.DataFrame(query.result_rows,columns=['Text','Category'])
         client.close()
@@ -30,7 +31,7 @@ class TestDataPreprocess(unittest.TestCase):
         self.assertEqual(len(targets), len(res))
 
     def test_prepare_text(self):
-        client = clickhouse_connect.get_client(host='localhost', username='default', password='')
+        client = connect2bd()
         query = client.query("SELECT Text, Category FROM BBC_News_Train")
         dataset = pd.DataFrame(query.result_rows,columns=['Text','Category'])
         client.close()

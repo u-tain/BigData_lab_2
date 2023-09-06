@@ -3,14 +3,14 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import configparser
 import logging
-import clickhouse_connect
+from bd_utils import connect2bd
 import numpy as np
 
 
 class DataPreprocess():
     def __init__(self) -> None:
         # подключаемся к базе данных
-        self.client = clickhouse_connect.get_client(host='localhost', username='default', password='')
+        self.client = connect2bd
         self.x_table_name = 'Train_features_BBC'
         self.y_table_name = 'targets_BBC'
         self.x_test_table_name = 'Test_features_BBC'
