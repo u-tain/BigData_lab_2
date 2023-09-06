@@ -1,22 +1,39 @@
 import os
 import pandas as pd
+import numpy as np
 import pickle
 from sklearn.linear_model import LogisticRegression
 import configparser
 import logging
+from bd_utils import connect2bd
+
 
 
 class Model():
     def __init__(self) -> None:
         self.config = configparser.ConfigParser()
         self.config.read("src/config.ini")
-        self.project_path = self.config['PROJECT']['path']
+        self.prodject_path = self.project_path = os.getcwd().replace('\\','/')
 
-        df = pd.read_csv(self.config['READY_DATA_TRAIN']['X_train'], index_col=0)
-        self.X_train = [df.iloc[i, :].array for i in range(len(df))]
-        self.y_train = pd.read_csv(self.config['READY_DATA_TRAIN']['y_train'], index_col=0).Category
-        self.project_path = os.path.join(self.project_path[:-5], "experiments")
-        self.log_reg_path = os.path.join(self.project_path, "logreg.sav")
+        # подключаемся к базе данных
+        self.client = connect2bd()
+
+        query1= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['x_train']}")
+        query2= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['y_train']}")
+        df1  = pd.DataFrame(columns= np.arange(int(self.config['READY_DATA_TRAIN']['x_train_columns'])),)
+        df2 = pd.DataFrame(columns = ['Category'])
+        rows1 = query1.result_rows
+        rows2 = query2.result_rows
+        for i in range(len(rows1)):
+            df1.loc[len(df1)] = rows1[i]
+            df2.loc[len(df2)] = rows2[i]
+
+        self.X_train = [df1.iloc[i, :].array for i in range(len(df1))]
+        self.y_train = df2.Category
+
+        self.log_reg_path = os.path.join( self.prodject_path,'experiments', "logreg.sav")
+        self.client.close()
+
 
     def log_reg(self) -> bool:
         classifier = LogisticRegression(penalty='l2', C=1.0, max_iter=100, random_state=0)

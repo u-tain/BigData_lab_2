@@ -2,6 +2,8 @@ import os
 import unittest
 import pandas as pd
 import sys 
+import clickhouse_connect
+from bd_utils import connect2bd
 
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
 from preprocess import DataPreprocess
@@ -9,7 +11,7 @@ from preprocess import DataPreprocess
 
 class TestDataPreprocess(unittest.TestCase):
     def setUp(self) -> None:
-        self.data_maker = DataPreprocess(os.getcwd()[:-14])
+        self.data_maker = DataPreprocess()
 
     def test_get_data(self):
         self.assertEqual(self.data_maker.get_data(), True)
@@ -18,16 +20,22 @@ class TestDataPreprocess(unittest.TestCase):
         self.assertEqual(self.data_maker.prepare_data(), True)
 
     def test_prepare_target(self):
-        project_path = os.path.join(os.getcwd()[:-14], "data")
-        data_path = os.path.join(project_path, "BBC News Train.csv")
-        targets = pd.read_csv(data_path)
+        client = connect2bd()
+        query = client.query("SELECT Text, Category FROM BBC_News_Train")
+        dataset = pd.DataFrame(query.result_rows,columns=['Text','Category'])
+        client.close()
+        
+        targets = pd.DataFrame(dataset.Category)
         res = self.data_maker.prepare_labels(targets)
         self.assertEqual(len(self.data_maker.labels_to_id), 5)
         self.assertEqual(len(targets), len(res))
 
     def test_prepare_text(self):
-        project_path = os.path.join(os.getcwd()[:-14], "data")
-        data_path = os.path.join(project_path, "BBC News Train.csv")
-        features = pd.read_csv(data_path)
+        client = connect2bd()
+        query = client.query("SELECT Text, Category FROM BBC_News_Train")
+        dataset = pd.DataFrame(query.result_rows,columns=['Text','Category'])
+        client.close()
+        
+        features = pd.DataFrame(dataset.Text)
         res = self.data_maker.prepare_text(features, 'train')
         self.assertEqual(len(features), len(res))

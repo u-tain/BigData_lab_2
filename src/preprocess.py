@@ -3,14 +3,14 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import configparser
 import logging
-import clickhouse_connect
+from bd_utils import connect2bd
 import numpy as np
 
 
 class DataPreprocess():
-    def __init__(self, project_path: str = None) -> None:
+    def __init__(self) -> None:
         # подключаемся к базе данных
-        self.client = clickhouse_connect.get_client(host='localhost', username='default', password='')
+        self.client = connect2bd
         self.x_table_name = 'Train_features_BBC'
         self.y_table_name = 'targets_BBC'
         self.x_test_table_name = 'Test_features_BBC'
@@ -66,16 +66,18 @@ class DataPreprocess():
                                            'y_train': self.y_table_name}
         self.config['READY_DATA_TEST'] = {'X_test': self.x_test_table_name}
 
-        # self.save_ready_data(X, self.x_table_name, 'Text')
-        # self.save_ready_data(y, self.y_table_name, 'Category')
-        self.save_ready_data(X_test, self.x_test_table_name, 'Text')
+        self.config['READY_DATA_TRAIN']['x_train_columns'] = str(self.save_ready_data(X, self.x_table_name, 'Text'))
+        self.config['READY_DATA_TRAIN']['y_train_columns'] = str(self.save_ready_data(y, self.y_table_name, 'Category'))
+        self.config['READY_DATA_TEST']['x_test_columns'] = str(self.save_ready_data(X_test, self.x_test_table_name, 'Text'))
         logging.info('Data saved')
         
         with open('src/config.ini', 'w') as configfile:
             self.config.write(configfile)
+        self.client.close()
         
 
     def save_ready_data(self, arr, name: str, mode: str) -> bool:
+        #TODO: проверить если таблица существует, то удалить и создать заново
         items = arr.tolist()
         df = pd.DataFrame()
         if mode == 'Text':
@@ -83,27 +85,27 @@ class DataPreprocess():
         else:
             df[mode] = items
         df = df.reset_index(drop=True)
+        print(len(df))
         # создаем таблицу для результат обработки данных
-        print(df.columns)
+
         if 'Range' in str(df.columns):
             columns = np.arange(df.columns.start,df.columns.stop)
         else: 
             columns = df.columns
         num_columns = len(columns)
+        # print(self.client.query(f'SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = {name};').result_rows)
         columns = [f'"{item}" FLOAT' for item in columns]
         columns = str(columns).replace('[','').replace(']','').replace("'","")
         text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = Log'
         delete_query = f'DROP TABLE {name};'
+        if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
+            self.client.query(delete_query)
         self.client.query(text_query)
         rows = df.values.tolist() 
-        # print(rows[0])
         rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
-        # print(name)
-        self.client.query(f'SET memory_overcommit_ratio_denominator=4000, memory_usage_overcommit_max_wait_microseconds=500')
         insert_query = f'INSERT INTO {name}  VALUES {rows} '
         print(self.client.query(insert_query))
-        print(self.client.query(f'SELECT * FROM {name}').result_rows)
-        # self.client.query(insert_query)
+        return num_columns
 
 
 if __name__ == "__main__":
