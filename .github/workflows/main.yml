@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DB_USER: default
+      DB_HOST: localhost
     steps:
       -
         name: Checkout
