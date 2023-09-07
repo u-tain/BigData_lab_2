@@ -13,7 +13,7 @@ class Model():
     def __init__(self) -> None:
         self.config = configparser.ConfigParser()
         self.config.read("src/config.ini")
-        self.prodject_path = self.project_path = os.getcwd().replace('\\','/')
+        self.prodject_path  = os.getcwd().replace('\\','/')
 
         # подключаемся к базе данных
         self.client = connect2bd()
