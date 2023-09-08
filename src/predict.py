@@ -11,7 +11,7 @@ class Predictor():
         self.config = configparser.ConfigParser()
         self.config.read("src/config.ini")
         self.prodject_path = self.project_path = os.getcwd().replace('\\','/')
-        self.client = connect2bd
+        self.client = connect2bd()
 
         query= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TEST']['X_test']}")
         df  = pd.DataFrame(columns= np.arange(int(self.config['READY_DATA_TEST']['x_test_columns'])),)

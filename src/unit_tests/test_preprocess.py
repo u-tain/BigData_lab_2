@@ -3,10 +3,10 @@ import unittest
 import pandas as pd
 import sys 
 import clickhouse_connect
-from bd_utils import connect2bd
 
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
 from preprocess import DataPreprocess
+from bd_utils import connect2bd
 
 
 class TestDataPreprocess(unittest.TestCase):
