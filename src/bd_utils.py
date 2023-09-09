@@ -1,5 +1,7 @@
 import clickhouse_connect
 import os
-
+HOST = os.getenv("DB_HOST")
+USER = os.getenv("DB_USER")
+print(HOST,USER)
 def connect2bd():
-    return clickhouse_connect.get_client(host=os.getenv("DB_HOST"), username=os.getenv("DB_USER"), password='',)
+    return clickhouse_connect.get_client(host=HOST, username=USER, password='',)
