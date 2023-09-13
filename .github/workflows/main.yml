@@ -10,8 +10,7 @@ jobs:
     steps:
     - 
       name: set_databese
-      run: | 
-      docker run -d --name clickhouse -p 8123:8123  --ulimut nofile=262144:26144 yandex/clickhouse-server  
+      uses: EpicStep/clickhouse-github-action@v1.0.0
 
   build:
     runs-on: ubuntu-latest
