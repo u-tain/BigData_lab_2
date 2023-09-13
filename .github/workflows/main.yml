@@ -17,11 +17,7 @@ jobs:
       
   build:
     needs: database
-    runs-on: ubuntu-latest
-    env:
-      DB_USER: default
-      DB_HOST: ${{ secrets.DOCKERHUB_USERNAME }}
-      
+    runs-on: ubuntu-latest      
     steps:
       -
         name: Checkout
@@ -43,7 +39,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
-          build-args: DB_HOST=localhost
+          build-args: DB_HOST=localhost DB_USER=default
       - 
         name: cd step
         uses: ./.github/workflows/cd  
