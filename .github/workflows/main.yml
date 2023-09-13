@@ -20,6 +20,7 @@ jobs:
     env:
       DB_USER: default
       DB_HOST: ${{ secrets.DOCKERHUB_USERNAME }}
+      
     steps:
       -
         name: Checkout
