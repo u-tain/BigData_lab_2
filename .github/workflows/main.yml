@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DB_USER: default
-      DB_HOST: 172.17.0.2
+      DB_HOST: localhost
     steps:
       -
         name: Checkout
