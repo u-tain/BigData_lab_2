@@ -13,7 +13,7 @@ jobs:
       name: set_databese
       uses: EpicStep/clickhouse-github-action@v1.0.0
       with:
-       args: -d -p 8123:8123 --network=host
+       args: -d -p 8123:8123 --network=host -e CLICKHOUSE_DB=default -e CLICKHOUSE_USER=utain -e CLICKHOUSE_PASSWORD=3244
       
   build:
     needs: database
@@ -41,7 +41,8 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
           build-args: |
             DB_HOST=localhost 
-            DB_USER=default
+            DB_USER=utain
+            DB_PASS = 3244
       - 
         name: cd step
         uses: ./.github/workflows/cd  
