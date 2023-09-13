@@ -43,7 +43,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
-          build-args: DB_HOST='${{ secrets.DOCKERHUB_USERNAME }}'
       - 
         name: cd step
         uses: ./.github/workflows/cd  
