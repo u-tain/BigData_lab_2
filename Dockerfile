@@ -1,7 +1,8 @@
 FROM python:3.10
 
 WORKDIR /app
-ENV DB_HOST = ${FOO}
+ARG DB_HOS=${FOO}
+ENV DB_HOST=${FOO}
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 COPY . .
