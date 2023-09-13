@@ -39,7 +39,9 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
-          build-args: DB_HOST=localhost DB_USER=default
+          build-args: |
+            DB_HOST=localhost 
+            DB_USER=default
       - 
         name: cd step
         uses: ./.github/workflows/cd  
