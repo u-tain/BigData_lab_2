@@ -5,7 +5,7 @@ import pandas as pd
 HOST = 'localhost' # os.getenv("DB_HOST")
 USER = 'default' #os.getenv("DB_USER")
 def connect2bd():
-    return clickhouse_connect.get_client(host=os.getenv("DB_HOST"), username=os.getenv("DB_USER"), password='',)
+    return clickhouse_connect.get_client(host=os.getenv("DB_HOST"), username=os.getenv("DB_USER"), password='', )
 
 def upload_data():
     client = connect2bd()
