@@ -2,7 +2,7 @@ import clickhouse_connect
 import os,sys
 import pandas as pd
 
-HOST = '172.17.0.2' # os.getenv("DB_HOST")
+HOST = 'localhost' # os.getenv("DB_HOST")
 USER = 'default' #os.getenv("DB_USER")
 def connect2bd():
     return clickhouse_connect.get_client(host=os.getenv("DB_HOST"), username=os.getenv("DB_USER"), password='',)
