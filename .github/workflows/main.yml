@@ -13,6 +13,7 @@ jobs:
       uses: EpicStep/clickhouse-github-action@v1.0.0
 
   build:
+    needs: database
     runs-on: ubuntu-latest
     env:
       DB_USER: default
