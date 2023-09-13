@@ -19,8 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DB_USER: default
-      DB_HOST: localhost
-      FOO: '${{ secrets.DOCKERHUB_USERNAME }}'
+      DB_HOST: ${{ secrets.DOCKERHUB_USERNAME }}
     steps:
       -
         name: Checkout
