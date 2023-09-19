@@ -40,9 +40,18 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
           build-args: |
-            DB_HOST=localhost 
+            DB_HOST=192.168.65.4
             DB_USER=utain
-            DB_PASS = 3244
+            DB_PASS = 3244 
+      -
+        name: Start docker
+        shell: bash
+        run: docker-compose up -d
+      -
+        name: Run docker
+        shell: bash
+        run: docker-compose run app
       - 
-        name: cd step
-        uses: ./.github/workflows/cd  
+        name: Stop docker
+        shell: bash
+        run: docker-compose down
