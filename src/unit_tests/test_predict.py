@@ -15,3 +15,7 @@ class TestPredictor(unittest.TestCase):
     def test_postproc(self):
         example = [0, 1, 1, 2, 3, 4, 1, 2, 0]
         self.assertEqual(len(self.predictor.post_process(example)), len(example))
+    def runTest(self):
+        self.test_predict()
+        self.test_postproc()
+        

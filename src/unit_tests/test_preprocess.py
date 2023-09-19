@@ -39,3 +39,9 @@ class TestDataPreprocess(unittest.TestCase):
         features = pd.DataFrame(dataset.Text)
         res = self.data_maker.prepare_text(features, 'train')
         self.assertEqual(len(features), len(res))
+    
+    def runTest(self):
+        self.test_get_data()
+        self.test_prepare_data()
+        self.test_prepare_data()
+        self.test_prepare_text()

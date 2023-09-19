@@ -8,6 +8,8 @@ from bd_utils import connect2bd
 
 class Predictor():
     def __init__(self) -> None:
+        logging.basicConfig(level=logging.INFO, filename="predict.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
         self.config = configparser.ConfigParser()
         self.config.read("src/config.ini")
         self.prodject_path = self.project_path = os.getcwd().replace('\\','/')
@@ -60,7 +62,6 @@ class Predictor():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, filename="predict.log",filemode="w",
-                    format="%(asctime)s %(levelname)s %(message)s")
+
     predictor = Predictor()
     predictor.predict()

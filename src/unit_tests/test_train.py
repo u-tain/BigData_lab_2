@@ -11,4 +11,6 @@ class TestTrain(unittest.TestCase):
 
     def test_log_reg(self):
         self.assertEqual(self.trainer.log_reg(), True)
-
+    
+    def runTest(self):
+        self.test_log_reg()

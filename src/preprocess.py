@@ -9,6 +9,8 @@ import numpy as np
 
 class DataPreprocess():
     def __init__(self) -> None:
+        logging.basicConfig(level=logging.INFO, filename="preprocess.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
         # подключаемся к базе данных
         self.client = connect2bd()
         self.x_table_name = 'Train_features_BBC'
@@ -111,8 +113,6 @@ class DataPreprocess():
 if __name__ == "__main__":
     import time
     start = time.time()
-    logging.basicConfig(level=logging.INFO, filename="preprocess.log",filemode="w",
-                    format="%(asctime)s %(levelname)s %(message)s")
     data_preprocess = DataPreprocess()
     data_preprocess.prepare_data()
     print(time.time()-start)

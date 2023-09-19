@@ -11,6 +11,8 @@ from bd_utils import connect2bd
 
 class Model():
     def __init__(self) -> None:
+        logging.basicConfig(level=logging.INFO, filename="train.log",filemode="w",
+                    format="%(asctime)s %(levelname)s %(message)s")
         self.config = configparser.ConfigParser()
         self.config.read("src/config.ini")
         self.prodject_path  = os.getcwd().replace('\\','/')
@@ -63,7 +65,6 @@ class Model():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, filename="train.log",filemode="w",
-                    format="%(asctime)s %(levelname)s %(message)s")
+    
     multi_model = Model()
     multi_model.log_reg()
