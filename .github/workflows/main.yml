@@ -5,16 +5,7 @@ on:
     branches:
       - "main"
 
-jobs:
-  database:
-    runs-on: ubuntu-latest
-    steps:
-    - 
-      name: set_databese
-      uses: EpicStep/clickhouse-github-action@v1.0.0
-      with:
-       args: -d -p 8123:8123 --network=host -e CLICKHOUSE_DB=default -e CLICKHOUSE_USER=utain -e CLICKHOUSE_PASSWORD=3244
-      
+jobs:     
   build:
     needs: database
     runs-on: ubuntu-latest      
