@@ -22,7 +22,7 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - DB_USER=utain
-      - DB_HOST=localhost
+      - DB_HOST=172.18.0.3
       - DB_PASS=3244
     volumes:
       - .:/app
