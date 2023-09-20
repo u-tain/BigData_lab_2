@@ -39,7 +39,7 @@ jobs:
       -
         name: Start docker
         shell: bash
-        run: docker-compose up -d
+        run: docker-compose up
       -
         name: Run docker
         shell: bash
