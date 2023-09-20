@@ -43,7 +43,7 @@ jobs:
       -
         name: Run docker
         shell: bash
-        run: docker-compose run app
+        run: docker-compose run
       - 
         name: Stop docker
         shell: bash
