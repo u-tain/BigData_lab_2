@@ -18,7 +18,7 @@ def check_clear_db(client):
 
 def upload_data():
     client = connect2bd()
-    check_clear_db(client)
+    # check_clear_db(client)
     # загружаем в базу данных данные для обучения
     querry1 = 'CREATE TABLE IF NOT EXISTS BBC_News_Train ( `Articled` Int, `Text` String, `Category` String) ENGINE = MergeTree ORDER BY Articled'
     client.query(querry1)
