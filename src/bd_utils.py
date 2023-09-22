@@ -25,6 +25,7 @@ def upload_data():
     df = pd.read_csv(os.path.join(os.getcwd(),'data','BBC News Train.csv'))
     rows = list(df.itertuples(index=False, name=None))
     insert_querry1 = 'INSERT INTO BBC_News_Train VALUES '+str(rows).replace('[','').replace(']','')
+    client = connect2bd()
     client.query(insert_querry1)
 
     # загружаем в базу данных данные для теста
