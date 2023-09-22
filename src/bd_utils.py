@@ -18,14 +18,13 @@ def check_clear_db(client):
 
 def upload_data():
     client = connect2bd()
-    # check_clear_db(client)
+    check_clear_db(client)
     # загружаем в базу данных данные для обучения
     querry1 = 'CREATE TABLE IF NOT EXISTS BBC_News_Train ( `Articled` Int, `Text` String, `Category` String) ENGINE = MergeTree ORDER BY Articled'
     client.query(querry1)
     df = pd.read_csv(os.path.join(os.getcwd(),'data','BBC News Train.csv'))
     rows = list(df.itertuples(index=False, name=None))
     insert_querry1 = 'INSERT INTO BBC_News_Train VALUES '+str(rows).replace('[','').replace(']','')
-    client = connect2bd()
     client.query(insert_querry1)
 
     # загружаем в базу данных данные для теста
