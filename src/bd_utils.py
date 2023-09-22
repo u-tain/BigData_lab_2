@@ -22,7 +22,7 @@ def upload_data():
     # загружаем в базу данных данные для обучения
     querry1 = 'CREATE TABLE IF NOT EXISTS BBC_News_Train ( `Articled` Int, `Text` String, `Category` String) ENGINE = MergeTree ORDER BY Articled'
     client.query(querry1)
-    print(os.path.join(os.getcwd(),'data','BBC News Train.csv'))s
+    print(os.path.join(os.getcwd(),'data','BBC News Train.csv'))
     df = pd.read_csv(os.path.join(os.getcwd(),'data','BBC News Train.csv'))
     rows = list(df.itertuples(index=False, name=None))
     insert_querry1 = 'INSERT INTO BBC_News_Train VALUES '+str(rows).replace('[','').replace(']','')
