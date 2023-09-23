@@ -1,6 +1,7 @@
 import clickhouse_connect
 import os,sys
 import pandas as pd
+import socket
 
 print(os.getenv("DB_HOST"), os.getenv("DB_USER"),os.getenv("DB_PASS"))
 def connect2bd():
@@ -18,6 +19,7 @@ def check_clear_db(client):
 
 def upload_data():
     client = connect2bd()
+    print(socket.gethostbyname(socket.gethostname()))
     print(client.querry("SELECT * FROM system.metrics WHERE metric LIKE '%Connection'"))
     check_clear_db(client)
     # загружаем в базу данных данные для обучения
