@@ -215,7 +215,7 @@
     
     <listen_host>::1</listen_host>
     <!-- <listen_host>127.0.0.1</listen_host> -->
-    <listen_host>172.18.0.4</listen_host> 
+    <listen_host>172.18.0.3</listen_host> 
 
     <!-- <interserver_listen_host>::</interserver_listen_host> -->
     <!-- Listen host for communication between replicas. Used for data exchange -->
