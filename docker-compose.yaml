@@ -14,7 +14,7 @@ services:
       CLICKHOUSE_PASSWORD: 3244
     volumes:
       - ./database/config.xml:/etc/clickhouse-server/config.xml
-    command: hostname -i
+    # command: hostname -i
     # healthcheck:
     #   disable: true
 
@@ -25,7 +25,7 @@ services:
       dockerfile: ./Dockerfile
     environment:
       - DB_USER=utain
-      - DB_HOST=172.21.0.2
+      - DB_HOST=172.18.0.3
       - DB_PASS=3244
     volumes:
       - .:/app
