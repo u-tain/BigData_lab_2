@@ -27,9 +27,9 @@ services:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      - DB_USER=default
-      - DB_HOST=localhost
-      # - DB_PASS=3244
+      - DB_USER=utain
+      - DB_HOST=172.18.0.3
+      - DB_PASS=3244
     volumes:
       - .:/app
     restart: on-failure

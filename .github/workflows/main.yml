@@ -39,12 +39,12 @@ jobs:
       -
         name: Start docker
         shell: bash
-        run: docker-compose up -d
-      -
-        name: Run docker
-        shell: bash
-        run: docker-compose run app 
-      - 
-        name: Stop docker
-        shell: bash
-        run: docker-compose down
+        run: docker-compose up 
+      # -
+      #   name: Run docker
+      #   shell: bash
+      #   run: docker-compose run app 
+      # - 
+      #   name: Stop docker
+      #   shell: bash
+      #   run: docker-compose down
