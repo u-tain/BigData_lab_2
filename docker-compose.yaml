@@ -10,7 +10,7 @@ services:
       nofile: 262144
     environment:
       CLICKHOUSE_DB: default
-      CLICKHOUSE_USER:  utain 
+      CLICKHOUSE_USER: utain 
       CLICKHOUSE_PASSWORD: 3244
     volumes:
       - ./database/config.xml:/etc/clickhouse-server/config.xml
