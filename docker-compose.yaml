@@ -14,6 +14,8 @@ services:
       CLICKHOUSE_PASSWORD: 3244
     volumes:
       - ./database/config.xml:/etc/clickhouse-server/config.xml
+    healthcheck:
+      disable: true
 
   app:
     container_name: app
