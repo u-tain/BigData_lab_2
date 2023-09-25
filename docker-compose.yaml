@@ -12,8 +12,8 @@ services:
       CLICKHOUSE_DB: default
       CLICKHOUSE_USER:  utain 
       CLICKHOUSE_PASSWORD: 3244
-    volumes:
-      - ./database/config.xml:/etc/clickhouse-server/config.xml
+    # volumes:
+    #   - ./database/config.xml:/etc/clickhouse-server/config.xml
     healthcheck:
       disable: true
 
