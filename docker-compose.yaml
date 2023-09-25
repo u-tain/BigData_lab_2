@@ -30,7 +30,7 @@ services:
     volumes:
       - .:/app
     restart: on-failure
-    # depends_on:
-    #   - database
+    depends_on:
+      - database
     #     condition: service_healthy
 
