@@ -3,7 +3,7 @@ version: '3.10'
 services:
   database:
     container_name: database
-    image: yandex/clickhouse-server
+    image: clickhouse/clickhouse-server
     ports:
       - "8123:8123"
     ulimits:
