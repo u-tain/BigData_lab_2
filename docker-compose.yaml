@@ -3,17 +3,20 @@ version: '3.10'
 services:
   database:
     container_name: database
-    image: clickhouse/clickhouse-server
+    image: clickhouse/clickhouse-server:latest
     ports:
       - "8123:8123"
+    # networks: 
+    #   - host
     ulimits:
       nofile: 262144
     environment:
       CLICKHOUSE_DB: default
-      CLICKHOUSE_USER: utain 
-      CLICKHOUSE_PASSWORD: 3244
+      # CLICKHOUSE_USER: utain 
+      # CLICKHOUSE_PASSWORD: 3244
     volumes:
       - ./database/config.xml:/etc/clickhouse-server/config.xml
+      # - ./database/users.xml:/etc/clickhouse-server/users.xml
     # command: hostname -i
     # healthcheck:
     #   disable: true
@@ -24,13 +27,16 @@ services:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      - DB_USER=utain
-      - DB_HOST=172.21.0.2
-      - DB_PASS=3244
+      - DB_USER=default
+      - DB_HOST=localhost
+      # - DB_PASS=3244
     volumes:
       - .:/app
     restart: on-failure
-    # depends_on:
-    #   - database
+    depends_on:
+      - database
     #     condition: service_healthy
-
+# networks:
+#   host:
+#     name: host
+#     external: true
