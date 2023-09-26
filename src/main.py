@@ -5,10 +5,12 @@ from predict import *
 from unit_tests.test_preprocess import *
 from unit_tests.test_train import *
 from unit_tests.test_predict import *
+import time
 
 
 
 if __name__ == "__main__":
+    time.sleep(1)
     upload_data()
     print('loaded')
     DataPreprocess().prepare_data()

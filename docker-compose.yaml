@@ -3,32 +3,37 @@ version: '3.10'
 services:
   database:
     container_name: database
-    image: clickhouse/clickhouse-server:latest
+    image: clickhouse/clickhouse-server
     ports:
       - "8123:8123"
-    # networks: 
-    #   - host
+    # expose:
+    #   - 8123
+    networks:
+      customnetwork:
+        ipv4_address: 172.25.0.2
     ulimits:
       nofile: 262144
     environment:
       CLICKHOUSE_DB: default
-      # CLICKHOUSE_USER: utain 
-      # CLICKHOUSE_PASSWORD: 3244
+      # CLICKHOUSECONFIG: default_session_timeout=120
+      CLICKHOUSE_USER:  utain 
+      CLICKHOUSE_PASSWORD: 3244
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     volumes:
       - ./database/config.xml:/etc/clickhouse-server/config.xml
       # - ./database/users.xml:/etc/clickhouse-server/users.xml
     # command: hostname -i
-    # healthcheck:
-    #   disable: true
 
   app:
     container_name: app
     build:
       context: .
       dockerfile: ./Dockerfile
+    # networks:
+    #   - customnetwork
     environment:
       - DB_USER=utain
-      - DB_HOST=172.18.0.3
+      - DB_HOST=172.25.0.2
       - DB_PASS=3244
     volumes:
       - .:/app
@@ -36,7 +41,10 @@ services:
     depends_on:
       - database
     #     condition: service_healthy
-# networks:
-#   host:
-#     name: host
-#     external: true
+
+networks:
+  customnetwork:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

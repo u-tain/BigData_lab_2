@@ -8,9 +8,9 @@ print(socket.gethostbyname(socket.gethostname()))
 
 
 def connect2bd():
-    return clickhouse_connect.get_client(host=os.getenv("DB_HOST"), 
+    return clickhouse_connect.get_client(host=os.getenv("DB_HOST"),
                                          username=os.getenv("DB_USER"), 
-                                         password='')
+                                         password=os.getenv("DB_PASS"))
 
 
 def check_clear_db(client):
@@ -22,6 +22,7 @@ def check_clear_db(client):
 
 def upload_data():
     client = connect2bd()
+    print(client.query("SELECT * FROM system.metrics WHERE metric LIKE '%Connection'"))
     check_clear_db(client)
     # загружаем в базу данных данные для обучения
     querry1 = 'CREATE TABLE IF NOT EXISTS BBC_News_Train ( `Articled` Int, `Text` String, `Category` String) ENGINE = MergeTree ORDER BY Articled'
