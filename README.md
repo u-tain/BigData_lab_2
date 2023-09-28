@@ -1,23 +1,17 @@
 # Отчет
 Ссылка на github репозиторий: https://github.com/u-tain/BigData_lab_2
 
-Ссылка на docker image: https://hub.docker.com/r/utainsacc/clockbox
 
 1. Сделан форк репозитория на GitHub
 2. Clickhouse запущен в докере и интегрирован в код
-3. Разработана ML модель с Логистической регрессией
-4. Конвертирована модель из *.ipynb в .py скрипты. 
-   Они находятся в папке src: preprocess.py, train.py, predict.py
-6. С помощью библиотеки unittest код был покрыт тестами, расположение: src/unit_tests
-7. Задействован DVC 
-8. Создан докер образ
-9. создан Dockerfile с указанием версии питона, установкой необходимых библиотек, запуска пайплайнов и тестов внутри докера. Создан и наполнен docker-compose.yaml
-10. создан CI pipeline, его код: 
-   ![image](https://github.com/u-tain/BigData_lab_1/assets/43996253/c3306b11-6f27-4de9-a17f-1829e92d7813)
+3. Настроено локальное подключение модели к бд
+4. Собран docker-compose.yaml с двумя  сервисами (бд и модель). Сначала удалось установить подключение с бд, но при переходе к следующему шагу (построению ci/cd пайплайну) и последующему возвращению к данному этапу не удалось решить ошибку: 
+```
+File "/usr/local/lib/python3.10/site-packages/urllib3/util/retry.py", line 515, in incrementapp 
+| raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='172.25.0.2', port=8123): 
+Max retries exceeded with url: /?wait_end_of_query=1 
+(Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7fcf31a7a710>, 
+'Connection to 172.25.0.2 timed out. (connect timeout=10)')
+```
 
-11. создан CD pipeline, его код: 
-
-    ![image](https://github.com/u-tain/BigData_lab_1/assets/43996253/e288aa5f-316f-42d3-955a-5f53a3e94851)
-
-Результат работы пайплайна и тестирования:
-![image](https://github.com/u-tain/BigData_lab_1/assets/43996253/1e304c9f-a59d-4f9d-af88-d6545732a7b7)

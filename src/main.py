@@ -10,7 +10,7 @@ import time
 
 
 if __name__ == "__main__":
-    time.sleep(1)
+    # time.sleep(1)
     upload_data()
     print('loaded')
     DataPreprocess().prepare_data()
