@@ -56,8 +56,9 @@ class Model():
         return self.save_model(classifier, self.log_reg_path)
 
     def save_model(self, classifier, path: str) -> bool:
-        with open(path, 'wb') as f:
-            pickle.dump(classifier, f)
+        pickle.dump(classifier, open(path, "wb"))
+        # with open(path, 'wb') as f:
+        #     pickle.dump(classifier, f)
         logging.info('model saved')
         return os.path.isfile(path)
 
