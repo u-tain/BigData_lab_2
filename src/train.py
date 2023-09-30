@@ -6,6 +6,7 @@ from sklearn.linear_model import LogisticRegression
 import configparser
 import logging
 from bd_utils import connect2bd
+import traceback
 
 
 
@@ -38,9 +39,12 @@ class Model():
 
 
     def log_reg(self) -> bool:
+        classifier = LogisticRegression(penalty='l2', C=1.0, max_iter=100, random_state=0)
+        logging.info('the model has been initialized')
         try:
-            classifier = LogisticRegression(penalty='l2', C=1.0, max_iter=100, random_state=0).fit(self.X_train, self.y_train)
+            classifier.fit(self.X_train, self.y_train)
         except Exception:
+            traceback.print_exc()
             logging.error("Something went wrong in fit model")
         else:
             logging.info('Model successfully trained')
@@ -57,8 +61,6 @@ class Model():
 
     def save_model(self, classifier, path: str) -> bool:
         pickle.dump(classifier, open(path, "wb"))
-        # with open(path, 'wb') as f:
-        #     pickle.dump(classifier, f)
         logging.info('model saved')
         return os.path.isfile(path)
 
