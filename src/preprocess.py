@@ -98,7 +98,7 @@ class DataPreprocess():
         print(columns)
         columns = [f'`{item}` FLOAT' for item in columns]
         columns = str(columns).replace('[','').replace(']','').replace("'","")
-        text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree '
+        text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree ORDER BY ID'
         delete_query = f'DROP TABLE {name};'
         if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
             self.client.query(delete_query)
