@@ -97,6 +97,7 @@ class DataPreprocess():
         num_columns = len(columns)
         print(columns)
         columns = [f'`{item}` FLOAT' for item in columns]
+        columns.insert(0,'`idx` INT')
         columns = str(columns).replace('[','').replace(']','').replace("'","")
         text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree ORDER BY ID'
         delete_query = f'DROP TABLE {name};'
@@ -109,6 +110,7 @@ class DataPreprocess():
         for i in range(batch_size):
             print(i)
             if i!=batch_size-1:
+                print(np.array(df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values).shape)
                 rows = df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values.tolist() 
             else: 
                 rows = df.iloc[(len(df)//batch_size)*i:].values.tolist() 
