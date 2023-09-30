@@ -112,6 +112,7 @@ class DataPreprocess():
             if i!=batch_size-1:
                 print(np.array(df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values).shape)
                 rows = df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values.tolist() 
+                rows = [item[i].insert(0,i) for item in range(len(rows))]
             else: 
                 rows = df.iloc[(len(df)//batch_size)*i:].values.tolist() 
             rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
