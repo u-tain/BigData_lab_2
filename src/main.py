@@ -15,9 +15,11 @@ if __name__ == "__main__":
     print('loaded')
     DataPreprocess().prepare_data()
     print('preprocessed')
-    Model().log_reg()
+    trainer = Model()
+    trainer.log_reg()
     print('trained')
-    Predictor().predict()
+    predicted = Predictor()
+    predicted.predict()
     print('predicted')
     # запускаем тесты
     TestDataPreprocess()()
