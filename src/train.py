@@ -23,7 +23,8 @@ class Model():
 
         query1= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['x_train']}")
         query2= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['y_train']}")
-        print(query1.summary())
+        print(query1)
+        print(query1.summary)
         df1  = pd.DataFrame(columns= np.arange(int(self.config['READY_DATA_TRAIN']['x_train_columns'])),)
         df2 = pd.DataFrame(columns = ['Category'])
         rows1 = query1.result_rows
