@@ -107,6 +107,7 @@ class DataPreprocess():
                 rows = df.iloc[(1490//2)*i:(i+1)*(1490//2)].values.tolist() 
             rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
             insert_query = f'INSERT INTO {name}  VALUES {rows} '
+            self.client.query(insert_query )
         return num_columns
 
 
