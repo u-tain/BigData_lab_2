@@ -8,7 +8,7 @@ print(socket.gethostbyname(socket.gethostname()))
 
 
 def connect2bd():
-    return clickhouse_connect.get_client(host='localhost',
+    return clickhouse_connect.get_client(host=os.getenv("DB_HOST"),
                                          username=os.getenv("DB_USER"), 
                                          password=os.getenv("DB_PASS"))
 
