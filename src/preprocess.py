@@ -95,7 +95,7 @@ class DataPreprocess():
         else: 
             columns = df.columns
         num_columns = len(columns)
-        columns = [f'"{item}" FLOAT' for item in columns]
+        columns = [f'`{item}` FLOAT' for item in columns]
         columns = str(columns).replace('[','').replace(']','').replace("'","")
         text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree'
         delete_query = f'DROP TABLE {name};'
