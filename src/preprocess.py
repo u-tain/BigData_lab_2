@@ -97,7 +97,7 @@ class DataPreprocess():
         num_columns = len(columns)
         print(columns)
         columns = [f'`{item}` FLOAT' for item in columns]
-        columns.insert(0,'`idx` INT')
+        columns.insert(0,'`idx` FLOAT')
         columns = str(columns).replace('[','').replace(']','').replace("'","")
         text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree ORDER BY idx'
         delete_query = f'DROP TABLE {name};'
