@@ -38,10 +38,8 @@ class Model():
 
 
     def log_reg(self) -> bool:
-        classifier = LogisticRegression(penalty='l2', C=1.0, max_iter=100, random_state=0)
-        logging.info('the model has been initialized')
         try:
-            classifier.fit(self.X_train, self.y_train)
+            classifier = LogisticRegression(penalty='l2', C=1.0, max_iter=100, random_state=0).fit(self.X_train, self.y_train)
         except Exception:
             logging.error("Something went wrong in fit model")
         else:
