@@ -102,7 +102,7 @@ class DataPreprocess():
         if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
             self.client.query(delete_query)
         self.client.query(text_query)
-        batch_size = 5
+        batch_size = 10
         for i in range(batch_size):
             if i!=3:
                 rows = df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values.tolist() 
