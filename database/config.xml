@@ -188,7 +188,7 @@
     <background_message_broker_schedule_pool_size>16</background_message_broker_schedule_pool_size>
     <background_distributed_schedule_pool_size>16</background_distributed_schedule_pool_size>
     --><!-- On memory constrained environments you may have to set this to value larger than 1.
-      --><max_server_memory_usage_to_ram_ratio>5</max_server_memory_usage_to_ram_ratio><!-- Simple server-wide memory profiler. Collect a stack trace at every peak allocation step (in bytes).
+      --><max_server_memory_usage_to_ram_ratio>10</max_server_memory_usage_to_ram_ratio><!-- Simple server-wide memory profiler. Collect a stack trace at every peak allocation step (in bytes).
          Data will be stored in system.trace_log table with query_id = empty string.
          Zero means disabled.
       --><total_memory_profiler_step>4194304</total_memory_profiler_step><!-- Collect random allocations and deallocations and write them into system.trace_log with 'MemorySample' trace_type.
