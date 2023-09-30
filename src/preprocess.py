@@ -95,7 +95,6 @@ class DataPreprocess():
         else: 
             columns = df.columns
         num_columns = len(columns)
-        # print(self.client.query(f'SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = {name};').result_rows)
         columns = [f'"{item}" FLOAT' for item in columns]
         columns = str(columns).replace('[','').replace(']','').replace("'","")
         text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = Log'
@@ -103,10 +102,11 @@ class DataPreprocess():
         if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
             self.client.query(delete_query)
         self.client.query(text_query)
-        rows = df.values.tolist() 
-        rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
-        insert_query = f'INSERT INTO {name}  VALUES {rows} '
-        print(self.client.query(insert_query))
+        if len(df) == 1490:
+            for i in range(2):
+                rows = df.iloc[(1490//2)*i:(i+1)*(1490//2)].values.tolist() 
+            rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
+            insert_query = f'INSERT INTO {name}  VALUES {rows} '
         return num_columns
 
 
