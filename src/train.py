@@ -43,6 +43,7 @@ class Model():
         logging.info('the model has been initialized')
         try:
             classifier.fit(self.X_train, self.y_train)
+            classifier_dtb = classifier.predict(self.X_train)
         except Exception:
             traceback.print_exc()
             logging.error("Something went wrong in fit model")
