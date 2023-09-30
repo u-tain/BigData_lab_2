@@ -42,6 +42,7 @@ class Model():
         classifier = LogisticRegression(penalty='l2', C=1.0, max_iter=100, random_state=0)
         logging.info('the model has been initialized')
         try:
+            print(len(self.X_train))
             classifier.fit(self.X_train, self.y_train)
             classifier_dtb = classifier.predict(self.X_train)
         except Exception:
