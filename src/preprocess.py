@@ -102,6 +102,8 @@ class DataPreprocess():
         if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
             self.client.query(delete_query)
         self.client.query(text_query)
+        df = df.iloc[:500,:]
+        print(len(df))
         batch_size = 10
         for i in range(batch_size):
             print(i)
