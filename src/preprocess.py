@@ -99,7 +99,7 @@ class DataPreprocess():
         columns = [f'`{item}` FLOAT' for item in columns]
         columns.insert(0,'`idx` INT')
         columns = str(columns).replace('[','').replace(']','').replace("'","")
-        text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree ORDER BY ID'
+        text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree ORDER BY idx'
         delete_query = f'DROP TABLE {name};'
         if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
             self.client.query(delete_query)
