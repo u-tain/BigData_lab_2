@@ -17,7 +17,7 @@ services:
       CLICKHOUSE_PASSWORD: 3244
       DEFAULT_SESSION_TIMEOUT: 120
     volumes:
-      - ./database/config.xml:/etc/clickhouse-server/config.xml
+      - ./database/config.xml: /opt/bitnami/clickhouse/etc/clickhouse-server/config.xml
     # healthcheck:
     #   test: curl -f https://172.25.0.2:8123 || exit 1
     #   interval: 1m30s
