@@ -102,11 +102,12 @@ class DataPreprocess():
         if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
             self.client.query(delete_query)
         self.client.query(text_query)
-        for i in range(4):
+        batch_size = 5
+        for i in range(batch_size):
             if i!=3:
-                rows = df.iloc[(len(df)//4)*i:(i+1)*(len(df)//4)].values.tolist() 
+                rows = df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values.tolist() 
             else: 
-                rows = df.iloc[(len(df)//4)*i:].values.tolist() 
+                rows = df.iloc[(len(df)//batch_size)*i:].values.tolist() 
             rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
             insert_query = f'INSERT INTO {name}  VALUES {rows} '
             self.client.query(insert_query )
