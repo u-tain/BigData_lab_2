@@ -101,6 +101,7 @@ class DataPreprocess():
         text_query = f'CREATE TABLE  IF NOT EXISTS {name}  ({columns}) ENGINE = MergeTree ORDER BY tuple()'
         delete_query = f'DROP TABLE {name};'
         if self.client.query(f'EXISTS TABLE {name}').result_rows[0][0] == 1:
+            print('delete')
             self.client.query(delete_query)
         self.client.query(text_query)
         print(len(df))
