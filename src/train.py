@@ -35,7 +35,7 @@ class Model():
         print(len(rows2))
         print(len(df1))
         print(len(df2))
-        for i in range(len(rows1)):
+        for i in range(len(rows2)):
             df1.loc[len(df1)] = rows1[i]
             df2.loc[len(df2)] = rows2[i]
 
