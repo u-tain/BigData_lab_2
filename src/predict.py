@@ -16,6 +16,7 @@ class Predictor():
         self.client = connect2bd()
 
         query= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TEST']['X_test']}")
+        print(query.summary)
         df  = pd.DataFrame(columns= np.arange(int(self.config['READY_DATA_TEST']['x_test_columns'])),)
         for item in query.result_rows:
             df.loc[len(df)] = item
