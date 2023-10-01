@@ -106,7 +106,7 @@ class DataPreprocess():
         self.client.query(text_query)
         # df = df.iloc[:500,:]
         print(len(df))
-        batch_size = 1
+        batch_size = 2
         for i in range(batch_size):
             if i!=batch_size-1:
                 rows = df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values.tolist() 
