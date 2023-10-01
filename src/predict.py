@@ -44,6 +44,8 @@ class Predictor():
         logging.info('Predictions fulfilled')
         Y_pred = self.post_process(Y_pred)
         logging.info('Predictions post-processed')
+        print(len(self.test_df_before_prepoc["ArticleId"]))
+        print(len(Y_pred))
         results = pd.DataFrame({
             "ArticleId": self.test_df_before_prepoc["ArticleId"],
             "Category": Y_pred
