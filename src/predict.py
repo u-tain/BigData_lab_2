@@ -48,7 +48,7 @@ class Predictor():
         print(len(Y_pred))
         results = pd.DataFrame({
             "ArticleId": self.test_df_before_prepoc["ArticleId"],
-            "Category": Y_pred
+            "Category": Y_pred[:len(self.test_df_before_prepoc["ArticleId"])]
         })
         self.config['RESULT'] = {'path': self.result_path}
         with open('src/config.ini', 'w') as configfile:
