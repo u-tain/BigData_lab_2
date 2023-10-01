@@ -31,6 +31,10 @@ class Model():
         df2 = pd.DataFrame(columns = ['Category'])
         rows1 = query1.result_rows
         rows2 = query2.result_rows
+        print(len(rows1))
+        print(len(rows2))
+        print(len(df1))
+        print(len(df2))
         for i in range(len(rows1)):
             df1.loc[len(df1)] = rows1[i]
             df2.loc[len(df2)] = rows2[i]
