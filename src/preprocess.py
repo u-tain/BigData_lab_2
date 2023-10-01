@@ -116,6 +116,7 @@ class DataPreprocess():
             rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
             insert_query = f'INSERT INTO {name}  VALUES {rows} '
             self.client.query(insert_query )
+        self.client.close()
         return num_columns
 
 
