@@ -106,7 +106,7 @@ class DataPreprocess():
         self.client.query(text_query)
         # df = df.iloc[:500,:]
         print(len(df))
-        batch_size = 10
+        batch_size = 1
         for i in range(batch_size):
             if i!=batch_size-1:
                 rows = df.iloc[(len(df)//batch_size)*i:(i+1)*(len(df)//batch_size)].values.tolist() 
@@ -116,7 +116,7 @@ class DataPreprocess():
             rows = str(rows)[1:-1].replace('[','(').replace(']',')').replace('\n','')
             insert_query = f'INSERT INTO {name}  VALUES {rows} '
             self.client.query(insert_query )
-        self.client.close()
+        # self.client.
         return num_columns
 
 
