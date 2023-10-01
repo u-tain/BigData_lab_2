@@ -7,6 +7,7 @@ import configparser
 import logging
 from bd_utils import connect2bd
 import traceback
+import time
 
 
 
@@ -22,9 +23,10 @@ class Model():
         self.client = connect2bd()
 
         query1= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['x_train']}")
-        query2= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['y_train']}")
         print(query1)
         print(query1.summary)
+        time.sleep(1)
+        query2= self.client.query(f"SELECT * FROM {self.config['READY_DATA_TRAIN']['y_train']}")
         df1  = pd.DataFrame(columns= np.arange(int(self.config['READY_DATA_TRAIN']['x_train_columns'])),)
         df2 = pd.DataFrame(columns = ['Category'])
         rows1 = query1.result_rows
