@@ -16,6 +16,7 @@ Max retries exceeded with url: /?wait_end_of_query=1
 ```
 5. Был изменен докер образ clickhouse и ошибка ушла
 6. Исправлен  CI/CD пайплайн
+7. Пароли, имена пользователей и IP адреса оформлены с помощью github secrets
 
 ![image](https://github.com/u-tain/BigData_lab_2/assets/43996253/9a5732b7-05af-4d0f-8c7c-868787c01e14)
 
